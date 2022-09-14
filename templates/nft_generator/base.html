@@ -1,0 +1,97 @@
+
+{% load static %}
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Did Coding NFT</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <!-- Toastr alerts -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.css" integrity="sha512-3pIirOrwegjM6erE5gPSwkUzO+3cTjpnV9lexlNZqvupR64iZBnOOTiiLPb9M36zpMScbmUNIcHUqKD47M719g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" type="text/css" href="{% static 'main.css' %}">
+
+  {% block extend_head %}
+  {% endblock %}
+ 
+</head>
+<body>
+ 
+  <div class="navbar">
+    <ul>
+  <li><a href="{% url 'nft_generator:home' %}">Home</a></li>
+  <li><a href="{% url 'nft_generator:token' %}">Create Token</a></li>
+  <li><a href="{% url 'nft_generator:tokens' %}">Tokens</a></li>
+  <li><div class="dropdown">
+    <button class="dropbtn">Accounts
+      <i class="fa fa-caret-down"></i>
+    </button>
+    <div class="dropdown-content">
+      {% for a in accounts %}
+      <a href="{% url 'nft_generator:account' account_id=a.account_id %}">{{a.name}}</a>
+      {% endfor %}
+    </div>
+  </div>
+</li>
+    <li><div class="dropdown">
+      <button class="dropbtn">Gererate NFT
+        <i class="fa fa-caret-down"></i>
+      </button>
+      <div class="dropdown-content">
+        {% for p in tokens %}
+        <a href="{% url 'nft_generator:nft-generator' name=p.name %}">{{p.name}}</a>
+        {% endfor %}
+      </div>
+    </div>
+  </li>
+  <li><div class="dropdown">
+    <button class="dropbtn">Mint NFT's
+      <i class="fa fa-caret-down"></i>
+    </button>
+    <div class="dropdown-content">
+      {% for p in tokens %}
+      <a href="{% url 'nft_generator:minting' name=p.name %}">{{p.name}}</a>
+      {% endfor %}
+    </div>
+  </div>
+</li>
+<li><div class="dropdown">
+  <button class="dropbtn">Associate
+    <i class="fa fa-caret-down"></i>
+  </button>
+  <div class="dropdown-content">
+    {% for p in tokens %}
+    <a href="{% url 'nft_generator:associate' name=p.name %}">{{p.name}}</a>
+    {% endfor %}
+  </div>
+</div>
+</li>
+  
+<li><div class="dropdown">
+  <button class="dropbtn">NFT's
+    <i class="fa fa-caret-down"></i>
+  </button>
+  <div class="dropdown-content">
+    {% for p in tokens %}
+    <a href="{% url 'nft_generator:nfts' %}?token={{p.hedera_token_id}}">{{p.name}}</a>
+    {% endfor %}
+  </div>
+</div>
+</li>
+</ul>
+</div>
+
+<div class="container">
+  {% block content %}
+  {% endblock %}
+</div>
+  <!--visit https://code.jquery.com/ for jquery script-->
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+  <!-- Toastr -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js" integrity="sha512-VEd+nq25CkR676O+pLBnDW09R7VQX9Mdiij052gVCp5yVH3jGtH70Ho/UUv4mJDsEdTvqRCFZg0NKGiojGnUCw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+  <!--Our own j2-->
+  <script src="{% static 'alert.js' %}"></script>
+  {% include 'nft_generator/messages.html' %}
+</body>
+</html>

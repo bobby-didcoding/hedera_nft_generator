@@ -1,0 +1,51 @@
+
+{% extends 'nft_generator/base.html' %}
+ 
+{% block content %}
+ 
+    
+
+    <div class="row">
+        {% for obj in page_obj %}
+        <div class="column">
+            <a href="{% url 'nft_generator:nft' slug=obj.slug %}">
+                <div class="card">
+                    <div class="card-header">{{obj.name}} --- {{obj.overall_rarity}}</div>
+                        <div class="card-body text-primary">
+                    <img src="{{obj.image.url}}" alt="{{obj.name}}" style="width:75%">
+                    {% if obj.minted %}
+                    <p>MINTED - serial number:{{obj.hedera_serials}}</p>
+                    {% else %}
+                    <p><a href="{% url 'nft_generator:minting' name=obj.token.name %}">Mint this NFT</a></p>
+                    {% endif %}
+                    <div class="card-footer text-muted">
+                        <a class="back-to-all" href="{% url 'nft_generator:nft' slug=obj.slug %}">View</a>
+                    </div>
+                    </div>
+                    
+                </div>
+            </a>
+        </div>
+        {% endfor %}
+    </div>
+
+    <div class="pagination">
+        <span class="step-links">
+            {% if page_obj.has_previous %}
+                <a href="?page=1">&laquo; first</a>
+                <a href="?page={{ page_obj.previous_page_number }}">previous</a>
+            {% endif %}
+    
+            <span class="current">
+                Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+            </span>
+    
+            {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}">next</a>
+                <a href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
+            {% endif %}
+        </span>
+    </div>
+ 
+{% endblock %}
+ 

@@ -1,0 +1,71 @@
+
+{% extends 'nft_generator/base.html' %}
+ 
+{% block content %}
+<table class="table table-dark table-striped">
+    <thead>
+      <tr>
+        <th scope="col">Title</th>
+        <th scope="col">Info</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>System ID</td>
+        <td>{{object.name}}</td>
+      </tr>
+      <tr>
+        <td>Name</td>
+        <td>{{object.name}}</td>
+      </tr>
+      <tr>
+        <td>Hedera Account ID</td>
+        <td>{{object.account_id}}</td>
+      </tr>
+      <tr>
+        <td>Hbar balance</td>
+        <td>{{object.hbar_balance}}</td>
+      </tr>
+      <tr>
+        <td>NFT balance</td>
+        <td>{{object.nft_balance}}</td>
+      </tr>
+
+    </tbody>
+</table>
+    
+
+    <div class="row">
+        {% for obj in page_obj %}
+        <div class="column">
+            <a href="{% url 'nft_generator:nft' slug=obj.slug %}">
+                <div class="card">
+                    <p class="title">{{obj.name}} --- {{obj.overall_rarity}}</p>
+                    <img src="{{obj.image.url}}" alt="{{obj.name}}" style="width:75%">
+                    <p><a class="back-to-all" href="{% url 'nft_generator:nft' slug=obj.slug %}">View</a></p>
+                </div>
+            </a>
+        </div>
+        {% endfor %}
+    </div>
+
+    <div class="pagination">
+        <span class="step-links">
+            {% if page_obj.has_previous %}
+                <a href="?page=1">&laquo; first</a>
+                <a href="?page={{ page_obj.previous_page_number }}">previous</a>
+            {% endif %}
+    
+            <span class="current">
+                Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+            </span>
+    
+            {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}">next</a>
+                <a href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
+            {% endif %}
+        </span>
+    </div>
+ 
+{% endblock %}
+ 

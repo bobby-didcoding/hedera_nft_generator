@@ -1,0 +1,17 @@
+
+{% extends 'nft_generator/base.html' %}
+ 
+{% block content %}
+ 
+    <form id="transfer-form" method="POST" action="/transfer/{{nft.slug}}/">
+    {% csrf_token %}
+        <div class="container">
+            <h1>Let's transfer this NFT?</h1>
+
+            {{form.as_p}}
+            <button type="submit" class="register btn">Submit</button>
+        </div>
+    </form>
+ 
+{% endblock %}
+ 

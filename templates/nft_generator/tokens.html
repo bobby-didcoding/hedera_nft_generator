@@ -1,0 +1,55 @@
+
+{% extends 'nft_generator/base.html' %}
+ 
+{% block content %}
+ 
+<table class="table table-dark table-striped">
+    <thead>
+      <tr>
+        <th scope="col">Id</th>
+        <th scope="col">Token Id</th>
+        <th scope="col">Company</th>
+        <th scope="col">Token Name</th>
+        <th scope="col">Token Symbol</th>
+        <th scope="col">Max supply</th>
+        <th scope="col">Remaining supply</th>
+        <th scope="col">Un-minted</th>
+        <th scope="col">Minted</th>
+        <th scope="col">Transferred</th>
+        <th scope="col">Associated accounts</th>
+        <th scope="col">Action</th>
+
+      </tr>
+    </thead>
+    <tbody>
+    {% for object in object_list %}
+      <tr>
+        <td>{{object.id}}</td>
+        <td>{{object.hedera_token_id}}</td>
+        <td>{{object.company_name}}</td>
+        <td>{{object.name}}</td>
+        <td>{{object.symbol}}</td>
+        <td>{{object.max_supply}}</td>
+        <td>{{object.get_remaining_supply}}</td>
+        <td>{{object.get_awaiting_mint}}</td>
+        <td>{{object.get_minted}}</td>
+        <td>{{object.get_transferred}}</td>
+        <td>{{object.get_associated}}</td>
+        
+        
+        <td>
+            <table class="table table-dark">
+                <tr>
+                    <td><a role="button" class="btn btn-success" href="{% url 'nft_generator:nfts' %}?token={{object.hedera_token_id}}" >View NFTs</a></td>
+                    <td><a role="button" class="btn btn-success" href="{% url 'nft_generator:nft-generator' name=object.name %}" >Generate NFT</a></td>
+                    <td><a role="button" class="btn btn-success" href="{% url 'nft_generator:minting' name=object.name %}" >Mint NFT</a></td>
+                    <td><a role="button" class="btn btn-success" href="{% url 'nft_generator:associate' name=object.name %}" >Associate</a></td>
+                </tr>
+            </table>
+        </td>
+      {% endfor %}
+    </tbody>
+</table>
+ 
+{% endblock %}
+ 

@@ -1,0 +1,45 @@
+
+{% extends 'nft_generator/base.html' %}
+{% load nft_tags %}
+ 
+{% block content %}
+
+        <div class="card">
+        <img src="{{object.image.url}}" alt="{{object.name}}" style="width:100%">
+        <p class="title">{{object.name}}</p>
+        <h1>Overall rarity = {{object.overall_rarity}}</h1>
+        
+        <table>
+            <tr>
+              <th>Trait</th>
+              <th>Rarity</th>
+            </tr>
+            {% for trait in traits %}
+            <tr>
+              <td>{{trait}} image</td>
+              <td>{% get_rarity object trait|lower %}</td>
+            </tr>
+            {% endfor %}
+            
+            <tr>
+              <td>IPFS metadata</td>
+              <td><a href='{{object.ipfs_file_uri}}' target="_blank">metadata</td>
+            </tr>
+            <tr>
+              <td>IPFS image</td>
+              <td><a href='{{object.ipfs_image_uri}}' target="_blank">image</td>
+            </tr>
+          </table>
+        <p>
+
+          {% if object.account == Null %}
+          <a class="back-to-all" href="{% url 'nft_generator:transfer' slug=object.slug %}">Transfer</a>
+          {% endif %}
+          <a class="back-to-all" href="{% url 'nft_generator:nfts' %}">View all</a>
+        </p>
+        </div>
+ 
+    
+ 
+{% endblock %}
+ 

@@ -1,0 +1,16 @@
+
+{% extends 'nft_generator/base.html' %}
+ 
+{% block content %}
+ 
+    <form id="token-form" method="POST" action="/token/">
+    {% csrf_token %}
+        <div class="container">
+            <h1>Create token</h1>
+            {{form.as_p}}
+            <button type="submit" class="register btn">Generate</button>
+        </div>
+    </form>
+ 
+{% endblock %}
+ 

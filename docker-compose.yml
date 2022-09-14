@@ -1,0 +1,111 @@
+version: '3.7'
+services:
+
+  db:
+    image: postgres
+    restart: unless-stopped
+    volumes:
+      - pg_payment:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_USER=${DB_NAME}
+      - POSTGRES_PASSWORD=${PASSWORD}
+      - POSTGRES_DB=${DB_NAME}
+      - POSTGRES_PORT= ${DB_PORT}
+    ports:
+      - "${DB_PORT}:5342"
+    container_name: demo_db
+
+  pgadmin:
+    image: dpage/pgadmin4
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=${DEFAULT_EMAIL}
+      - PGADMIN_DEFAULT_PASSWORD=${PASSWORD}
+    restart: unless-stopped
+    volumes:
+      - pgadmin:/var/lib/pgadmin
+    ports:
+      - "5050:80"
+    container_name: demo_pgadmin
+
+  app:
+    build:
+      context: .
+      dockerfile: docker/docker_files/Dockerfile
+    platform: linux/amd64
+    restart: unless-stopped
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - ./:/code
+    ports:
+      - 8000:8000
+    env_file:
+      - .env
+    depends_on:
+      - db
+      - redis
+    container_name: demo_django_app
+
+  redis:
+    image: redis:6-alpine
+    ports:
+      - "6379:6379"
+    container_name: demo_redis
+
+  celery_worker:
+    restart: always
+    build:
+      context: .
+      dockerfile: docker/docker_files/Dockerfile
+    command: celery -A nft worker --loglevel=info --logfile=logs/celery.log
+    volumes:
+      - ./:/code
+    env_file:
+      - .env
+    depends_on:
+      - db
+      - redis
+      - app
+    container_name: demo_celery_worker
+
+  celery-beat:
+    build:
+      context: .
+      dockerfile: docker/docker_files/Dockerfile
+    command: celery -A nft beat -l info
+    volumes:
+      - ./:/code
+    env_file:
+      - .env
+    depends_on:
+      - db
+      - redis
+      - app
+    container_name: demo_celery_beat
+
+  flower:
+    build:
+      context: .
+      dockerfile: docker/docker_files/Dockerfile
+    command: celery -A nft flower  --broker=redis://redis:6379
+    ports:
+      - 5555:5555
+    env_file:
+      - .env
+    depends_on:
+      - db
+      - app
+      - redis
+      - celery_worker
+    container_name: demo_flower
+
+  ipfs:
+    image: ipfs/go-ipfs
+    ports:
+      - "8080:8080"
+      - "8081:8081"
+      - "5001:5001"
+    container_name: demo_ipfs
+
+volumes:
+  pg_payment:
+  pgadmin:

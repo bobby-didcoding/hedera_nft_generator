@@ -1,0 +1,50 @@
+{
+    "creator": "Did Coding",
+    "description": "test",
+    "format": "none",
+    "image": "ipfs://QmPym95swjVkvvBQmpz18sLpqykw6wGRmTYPy69rm8tg8D",
+    "name": "newminimen_9",
+    "properties": [
+        {
+            "trait_type": "base",
+            "value": "Yellow"
+        },
+        {
+            "trait_type": "body",
+            "value": "Tone 3"
+        },
+        {
+            "trait_type": "hair",
+            "value": "Bald"
+        },
+        {
+            "trait_type": "top",
+            "value": "Red"
+        },
+        {
+            "trait_type": "pants",
+            "value": "Dungeries"
+        },
+        {
+            "trait_type": "prop",
+            "value": "None"
+        },
+        {
+            "trait_type": "bling",
+            "value": "Chain"
+        },
+        {
+            "trait_type": "tattoo",
+            "value": "None"
+        },
+        {
+            "trait_type": "shades",
+            "value": "None"
+        },
+        {
+            "trait_type": "coin",
+            "value": "None"
+        }
+    ],
+    "type": "image/png"
+}

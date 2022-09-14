@@ -1,0 +1,33 @@
+
+{% extends 'nft_generator/base.html' %}
+ 
+{% block content %}
+ 
+<table class="table table-dark table-striped">
+    <thead>
+      <tr>
+        <th scope="col">Id</th>
+        <th scope="col">Name</th>
+        <th scope="col">Account id</th>
+        <th scope="col">Action</th>
+      </tr>
+    </thead>
+    <tbody>
+    {% for object in object_list %}
+      <tr>
+        <td>{{object.id}}</td>
+        <td>{{object.name}}</td>
+        <td>{{object.account_id}}</td>
+        <td>
+            <table class="table table-dark">
+                <tr>
+                    <td><a role="button" class="btn btn-success" href="{{object.get_absolute_url}}" >View</a></td>
+                </tr>
+            </table>
+        </td>
+      {% endfor %}
+    </tbody>
+</table>
+ 
+{% endblock %}
+ 
