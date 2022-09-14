@@ -5,6 +5,7 @@ This project has been Dockerized to simplify system set up.
 
 ## Prerequisites
 * [Docker & Docker Compose](https://docs.docker.com/desktop/) (<span style="color:orange">Local Development with Docker</span> only)
+* [Hedera testnet credentials](https://portal.hedera.com/register)
 
 ***
 ***
