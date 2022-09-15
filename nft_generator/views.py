@@ -49,12 +49,12 @@ class NFTGeneratorView(generic.FormView):
     def form_valid(self, form):
         quantity = form.cleaned_data.get('quantity')
         
-        token = Token.objects.get(name =self.kwargs['name'])
+        token = Token.objects.get(id =self.kwargs['id'])
         if quantity > token.get_remaining_supply:
             messages.error(self.request, f"You have {token.get_remaining_supply} remaining supply")
         else:
             messages.success(self.request, f"You have generated {quantity} piece(s) of NFT artwork. You now need to mint them.")
-            create_nft.delay(quantity)
+            create_nft.delay(quantity, token.id)
 
         return super().form_valid(form)
 
@@ -64,7 +64,7 @@ class NFTGeneratorView(generic.FormView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["token"] = Token.objects.get(name = self.kwargs['name'])
+        context["token"] = Token.objects.get(id = self.kwargs['id'])
         return context
 
    
@@ -81,6 +81,9 @@ class NFTView(generic.DetailView):
     """
     template_name = "nft_generator/nft.html"
     model = NoneFungibleToken
+
+    def get_object(self):
+        return NoneFungibleToken.objects.get(id = self.kwargs["id"])
 
     @method_decorator(redirect_if_no_token)
     def dispatch(self, *args, **kwargs):
@@ -104,13 +107,13 @@ class NFTSView(generic.ListView):
 
     def get_queryset(self, **kwargs):
         objects = self.model.objects.filter(account__isnull=True)
-        token = self.request.GET.get('token', None)
-        if token:
-            token = Token.objects.get(hedera_token_id = token)
+        token_id = self.request.GET.get('token_id', None)
+        if token_id:
+            token = Token.objects.get(id = token_id)
             objects = self.model.objects.filter(token = token)
-        account = self.request.GET.get('account', None)
-        if account:
-            account = Account.objects.get(account_id = account)
+        account_id = self.request.GET.get('account_id', None)
+        if account_id:
+            account = Account.objects.get(id = account_id)
             objects = self.model.objects.filter(account = account)
         object_list = sorted(objects, key = lambda r: r.overall_rarity)
         return object_list
@@ -121,8 +124,8 @@ class NFTSView(generic.ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        token = self.request.GET.get("token", None)
-        context["token"] = token
+        token_id = self.request.GET.get("token_id", None)
+        context["token_id"] = token_id
         return context
 
 
@@ -186,7 +189,7 @@ class MintView(generic.FormView):
     def form_valid(self, form):
         mint = form.cleaned_data.get('mint')
         if mint == 'Yes':
-            mint_nft(Token.objects.get(name = self.kwargs['name']))
+            mint_nft(Token.objects.get(id = self.kwargs['id']))
             messages.success(self.request, "All NFT's have been processed")
         else:
             messages.success(self.request, "No NFT's were minted")
@@ -198,7 +201,7 @@ class MintView(generic.FormView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        token = Token.objects.get(name = self.kwargs['name'])
+        token = Token.objects.get(id = self.kwargs['id'])
         context["token"] = token
         context["nfts"] = NoneFungibleToken.objects.filter(minted=False, token = token)
         return context
@@ -223,9 +226,10 @@ class AssociateView(generic.FormView):
         associate = form.cleaned_data.get('associate')
         account = form.cleaned_data.get('account')
         if associate == 'Yes':
-            associate_account(self.kwargs['name'], account.account_id)
+            token_id = self.kwargs['id']
+            associate_account(token_id, account.account_id)
             messages.success(self.request, "Account has been associated")
-            token = Token.objects.get(name = self.kwargs['name'])
+            token = Token.objects.get(id = token_id)
             token.associated_accounts.add(account)
             token.save()
         else:
@@ -239,13 +243,13 @@ class AssociateView(generic.FormView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        token = Token.objects.get(name = self.kwargs['name'])
+        token = Token.objects.get(id = self.kwargs['id'])
         context["token"] = token
         return context 
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
-        token = Token.objects.get(name = self.kwargs['name'])
+        token = Token.objects.get(id = self.kwargs['id'])
         associated_account_ids = [a.id for a in token.associated_accounts.all()]
         accounts = Account.objects.exclude(id__in=associated_account_ids)
         kwargs.update({'accounts': accounts})
@@ -271,9 +275,10 @@ class TransferView(generic.FormView):
         transfer = form.cleaned_data.get('transfer')
         account = form.cleaned_data.get('account')
         if transfer == 'Yes':
-            transfer_nft(self.kwargs['slug'], account.account_id)
+            nft_id = self.kwargs['id']
+            transfer_nft(nft_id, account.id)
             messages.success(self.request, "NFT is being transferred")
-            nft = NoneFungibleToken.objects.get(slug = self.kwargs['slug'])
+            nft = NoneFungibleToken.objects.get(id = nft_id)
             nft.account = account
             nft.save()
         else:
@@ -287,13 +292,13 @@ class TransferView(generic.FormView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        nft = NoneFungibleToken.objects.get(slug = self.kwargs['slug'])
+        nft = NoneFungibleToken.objects.get(id = self.kwargs['id'])
         context["nft"] = nft
         return context 
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
-        nft = NoneFungibleToken.objects.get(slug = self.kwargs['slug'])
+        nft = NoneFungibleToken.objects.get(id = self.kwargs['id'])
         associated_account_ids = [a.id for a in nft.token.associated_accounts.all()]
         accounts = Account.objects.filter(id__in=associated_account_ids)
         kwargs.update({'accounts': accounts})
@@ -341,13 +346,13 @@ class AccountView(generic.ListView):
         return super().dispatch(*args, **kwargs)
 
     def get_queryset(self):
-        object_list = NoneFungibleToken.objects.filter(account__account_id = self.kwargs['account_id'])
+        object_list = NoneFungibleToken.objects.filter(account__id = self.kwargs['id'])
         return object_list
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        object = Account.objects.get(account_id = self.kwargs['account_id'])
-        manager = AccountManager(account_id = object.account_id)
+        object = Account.objects.get(id = self.kwargs['id'])
+        manager = AccountManager(account = object)
         balance_response = manager.query_account_balance()
         info_response = manager.query_account_info()
         object.nft_balance = int(info_response["nfts"])

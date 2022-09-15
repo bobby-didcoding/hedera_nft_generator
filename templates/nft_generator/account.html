@@ -38,11 +38,11 @@
     <div class="row">
         {% for obj in page_obj %}
         <div class="column">
-            <a href="{% url 'nft_generator:nft' slug=obj.slug %}">
+            <a href="{% url 'nft_generator:nft' id=obj.id %}">
                 <div class="card">
-                    <p class="title">{{obj.name}} --- {{obj.overall_rarity}}</p>
+                    <p class="title">{{obj.name}}</p>
                     <img src="{{obj.image.url}}" alt="{{obj.name}}" style="width:75%">
-                    <p><a class="back-to-all" href="{% url 'nft_generator:nft' slug=obj.slug %}">View</a></p>
+                    <p><a class="back-to-all" href="{% url 'nft_generator:nft' id=obj.id %}">View</a></p>
                 </div>
             </a>
         </div>

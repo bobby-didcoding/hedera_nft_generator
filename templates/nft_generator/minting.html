@@ -3,7 +3,7 @@
  
 {% block content %}
  
-    <form id="mint-form" method="POST" action="/minting/{{token.name}}/">
+    <form id="mint-form" method="POST" action="/minting/{{token.id}}/">
     {% csrf_token %}
         <div class="container">
             <h1>Would you like to mint your NFT's?</h1>

@@ -35,7 +35,7 @@ class AccountManager:
     Manager to handle Hedera Account endpoints
     '''
     def __init__ (self, *args, **kwargs):
-        self.account_id = kwargs.get("account_id")
+        self.account = kwargs.get("account")
 
     def create_new_account(self):
         '''
@@ -59,7 +59,7 @@ class AccountManager:
 
     def query_account_balance(self, **kwargs):
         nft = kwargs.get("nft")
-        acc_id = self.account_id
+        acc_id = self.account.account_id
         acc_query = AccountBalanceQuery(
             ).setAccountId(AccountId.fromString(acc_id)
             ).execute(client)
@@ -75,7 +75,7 @@ class AccountManager:
         return response
 
     def query_account_info(self, **kwargs):
-        acc_id = self.account_id
+        acc_id = self.account.account_id
         acc_query = AccountInfoQuery(
             ).setAccountId(AccountId.fromString(acc_id)
             ).execute(client)
@@ -87,21 +87,6 @@ class AccountManager:
         }
         return response
 
-
-class HederaData:
-	def __init__(self, *args, **kwargs):
-		self.acc_id = kwargs.get("acc_id")
-		self.client = kwargs.get("client")
-
-	def balance(self):
-		acc_id = AccountId.fromString(self.acc_id)
-		balance = AccountBalanceQuery().setAccountId(acc_id).execute(self.client).hbars.toString()		
-		return balance
-
-	def get_cost(self):
-		acc_id = AccountId.fromString(self.acc_id)
-		cost = AccountBalanceQuery().setAccountId(acc_id).getCost(self.client)	
-		return cost
 
 class TokenManager:
 
@@ -141,7 +126,7 @@ class TokenManager:
         
         token_mint = TokenMintTransaction(
         ).setTokenId(TokenId.fromString(self.nft.token.hedera_token_id)
-        ).addMetadata([ord(s) for s in self.nft.ipfs_file_cid]
+        ).addMetadata([ord(s) for s in self.nft.get_ipfs_file_cid]
         ).freezeWith(client
         ).sign(OPERATOR_KEY
         ).execute(client)
@@ -156,26 +141,29 @@ class TokenManager:
 
 
     def associate(self, **kwargs):
-        self.acc = kwargs.get("acc")
+        self.account = kwargs.get("account")
         self.token = kwargs.get("token")
-        self.key = kwargs.get("key")
+        account_id = self.account.account_id
+        account_secret_key = self.account.account_private_key
+        token_id = self.token.hedera_token_id
         token_ass = TokenAssociateTransaction(
-            ).setAccountId(AccountId.fromString(self.acc)
-            ).setTokenIds(Collections.singletonList(TokenId.fromString(self.token))
+            ).setAccountId(AccountId.fromString(account_id)
+            ).setTokenIds(Collections.singletonList(TokenId.fromString(token_id))
             ).freezeWith(client
-            ).sign(PrivateKey.fromString(self.key)
+            ).sign(PrivateKey.fromString(account_secret_key)
             ).execute(client)
 
         return token_ass
 
     def transfer(self, **kwargs):
-        self.token = kwargs.get("token")
+        self.account = kwargs.get("account")
         self.nft = kwargs.get("nft")
-        self.account_id = kwargs.get("account_id")
-        nft_id = NftId(TokenId.fromString(self.token), self.nft)
-
+        account_id = self.account.account_id
+        token_id = self.nft.token.hedera_token_id
+        nft_serial_number = int(self.nft.hedera_serials)
+        nft_id = NftId(TokenId.fromString(token_id), nft_serial_number)
         transfer = TransferTransaction(
-            ).addNftTransfer(nft_id, OPERATOR_ID, AccountId.fromString(self.account_id)
+            ).addNftTransfer(nft_id, OPERATOR_ID, AccountId.fromString(account_id)
             ).freezeWith(client
             ).sign(OPERATOR_KEY
             ).execute(client)

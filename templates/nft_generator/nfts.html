@@ -8,18 +8,18 @@
     <div class="row">
         {% for obj in page_obj %}
         <div class="column">
-            <a href="{% url 'nft_generator:nft' slug=obj.slug %}">
+            <a href="{% url 'nft_generator:nft' id=obj.id %}">
                 <div class="card">
-                    <div class="card-header">{{obj.name}} --- {{obj.overall_rarity}}</div>
+                    <div class="card-header">{{obj.name}}</div>
                         <div class="card-body text-primary">
                     <img src="{{obj.image.url}}" alt="{{obj.name}}" style="width:75%">
                     {% if obj.minted %}
                     <p>MINTED - serial number:{{obj.hedera_serials}}</p>
                     {% else %}
-                    <p><a href="{% url 'nft_generator:minting' name=obj.token.name %}">Mint this NFT</a></p>
+                    <p><a href="{% url 'nft_generator:minting' id=obj.token.id %}">Mint this NFT</a></p>
                     {% endif %}
                     <div class="card-footer text-muted">
-                        <a class="back-to-all" href="{% url 'nft_generator:nft' slug=obj.slug %}">View</a>
+                        <a class="back-to-all" href="{% url 'nft_generator:nft' id=obj.id %}">View</a>
                     </div>
                     </div>
                     

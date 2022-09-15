@@ -3,6 +3,9 @@
 # --------------------------------------------------------------
 import os
 import json
+from tabnanny import verbose
+from unicodedata import category
+from unittest.util import _MAX_LENGTH
 
 # --------------------------------------------------------------
 # Django imports
@@ -11,15 +14,47 @@ from django.db import models
 from django_extensions.db.models import TimeStampedModel
 from django.core.files.base import ContentFile
 from django.core.files import File
+from django.conf import settings
 
 # --------------------------------------------------------------
 # 3rd party imports
 # --------------------------------------------------------------
 from PIL import Image
 
-TRAITS = [
-    'Base','Body','Pants','Top','Bling','Shades','Coin','Tattoo','Hair','Prop'
-]
+TRAITS = settings.TRAITS
+
+
+class Category(TimeStampedModel,models.Model):
+    """
+    nft_generator.Category
+    Stores a single category type
+    """
+    name = models.CharField(max_length=100, null=True, blank=True)
+    description = models.CharField(max_length=200, null=True, blank=True)
+    ordering = models.IntegerField(default = 0)
+
+    def __str__(self):
+        return f'{self.name}'
+
+    class Meta:
+        verbose_name_plural="Categories"
+
+
+class Trait(TimeStampedModel,models.Model):
+    """
+    nft_generator.Trait
+    Stores a single trait
+    """
+    name = models.CharField(max_length=100, null=True, blank=True)
+    description = models.CharField(max_length=200, null=True, blank=True)
+    category = models.ForeignKey(Category, null=True, on_delete=models.SET_NULL)
+    image = models.ImageField(default='blank.png', upload_to='traits')
+
+    def __str__(self):
+        return f'{self.name}'
+
+
+
 class Account(TimeStampedModel,models.Model):
     """
     nft_generator.Account
@@ -31,6 +66,7 @@ class Account(TimeStampedModel,models.Model):
     account_private_key = models.CharField(max_length=100, null=True, blank=True)
     nft_balance = models.IntegerField(default=0, null=True, blank=True)
     hbar_balance = models.CharField(max_length=100, null=True, blank=True)
+    is_demo = models.BooleanField(default=False)
 
     def __str__(self):
         return f'{self.name}'
@@ -86,9 +122,7 @@ class NoneFungibleToken(TimeStampedModel,models.Model):
     token = models.ForeignKey(Token, on_delete=models.SET_NULL, null=True)
     name = models.CharField(max_length=100, null=True, blank=True)
     image = models.ImageField(default='blank.png', upload_to='nfts')
-    slug = models.SlugField(null=True, blank=True)
-    nft_attributes = models.JSONField(default=dict)
-    metadata = models.JSONField(default=dict)
+    traits = models.ManyToManyField(Trait, blank=True)
 
     file = models.FileField(default='blank.json', upload_to='json')
     hedera_serials = models.CharField(max_length=100, null=True, blank=True)
@@ -100,6 +134,10 @@ class NoneFungibleToken(TimeStampedModel,models.Model):
     @property
     def get_file_name(self):
         return os.path.basename(self.file.name)
+
+    @property
+    def get_ipfs_file_cid(self):
+        return self.ipfs_file_uri.split('?')[0].replace('https://ipfs.io/ipfs/', '')
     
     @property
     def get_description(self):
@@ -116,20 +154,11 @@ class NoneFungibleToken(TimeStampedModel,models.Model):
     ipfs_image_uri = models.URLField(max_length=200, blank=True, null=True)
     ipfs_file_uri = models.URLField(max_length=200, blank=True, null=True)
 
-    ipfs_image_uri_internal = models.CharField(max_length=200, blank=True, null=True)
-    ipfs_file_uri_internal = models.CharField(max_length=200, blank=True, null=True)
-
-    ipfs_image_uri_hedera = models.CharField(max_length=200, blank=True, null=True)
-    ipfs_file_uri_hedera = models.CharField(max_length=200, blank=True, null=True)
-
-    ipfs_image_cid = models.CharField(max_length=200, blank=True, null=True)
-    ipfs_file_cid = models.CharField(max_length=200, blank=True, null=True)
-
     def __str__(self):
         return f'{self.name}'
 
     def get_absolute_url(self):
-        return f"/nft/{self.slug}"
+        return f"/nft/{self.id}"
 
     def all_nfts(self):
         all_nfts = NoneFungibleToken.objects.all()
@@ -137,21 +166,18 @@ class NoneFungibleToken(TimeStampedModel,models.Model):
 
 
     def get_rarity(self, **kwargs):
-        name = kwargs.get("name")
-        kwargs = {
-            f'nft_attributes__{name}': self.nft_attributes[name]
-        }
-        nft_qty = NoneFungibleToken.objects.filter(**kwargs).count()
-        return format(nft_qty / self.all_nfts(), '.2%')
+        trait = kwargs.get("trait")
+        nft_qty = NoneFungibleToken.objects.filter(traits__name=trait.name).count()
+        return format(1-(nft_qty / self.all_nfts()), '.2%')
 
     @property
     def overall_rarity(self):
         trait_list = []
         for t in TRAITS:
-            kwargs = {
-                f'nft_attributes__{t.lower()}':self.nft_attributes[t.lower()]
-            }
-            trait = NoneFungibleToken.objects.filter(**kwargs).count()
+            # kwargs = {
+            #     f'nft_attributes__{t.lower()}':self.nft_attributes[t.lower()]
+            # }
+            trait = NoneFungibleToken.objects.filter(traits__category__name=t.lower()).count()
             trait_list.append(trait)
 
         total_traits = 0

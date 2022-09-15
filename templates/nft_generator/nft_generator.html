@@ -3,7 +3,7 @@
  
 {% block content %}
  
-    <form id="nft-form" method="POST" action="/nft-generator/{{token.name}}/">
+    <form id="nft-form" method="POST" action="/nft-generator/{{token.id}}/">
     {% csrf_token %}
         <div class="container">
             <h1>Generate NFT's</h1>

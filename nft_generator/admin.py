@@ -6,9 +6,19 @@ from django.contrib import admin
 # --------------------------------------------------------------
 # App imports
 # --------------------------------------------------------------
-from .models import NoneFungibleToken, Token, Account
+from .models import NoneFungibleToken, Token, Account, Category, Trait
 
+@admin.register(Category)
+class Category(admin.ModelAdmin):
+    list_display = (
+        'id','name', 'ordering'
+        )
 
+@admin.register(Trait)
+class Trait(admin.ModelAdmin):
+    list_display = (
+        'id','name'
+        )
 @admin.register(Account)
 class Account(admin.ModelAdmin):
     list_display = (
@@ -28,10 +38,8 @@ class NoneFungibleToken(admin.ModelAdmin):
     list_display = (
         'id',
         'name',
-        'slug',
         'overall_rarity',
         )
-    readonly_fields = ('slug', )
 
 
 

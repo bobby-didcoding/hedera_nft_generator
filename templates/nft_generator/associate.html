@@ -3,7 +3,7 @@
  
 {% block content %}
  
-    <form id="associate-form" method="POST" action="/associate/{{token.name}}/">
+    <form id="associate-form" method="POST" action="/associate/{{token.id}}/">
     {% csrf_token %}
         <div class="container">
             <h1>Let's associate your account?</h1>

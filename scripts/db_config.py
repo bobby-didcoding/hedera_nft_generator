@@ -16,7 +16,7 @@ from django.contrib.auth import get_user_model
 # --------------------------------------------------------------
 # App imports
 # --------------------------------------------------------------
-from nft_generator.models import Account
+from nft_generator.models import Account, Trait, Category
 
 # --------------------------------------------------------------
 # Project imports
@@ -85,6 +85,16 @@ def run():
         acc.save()
 
         print ("*****Done*****")
+
+    print ("*****Creating project traits*****")
+    traits = settings.TRAITS
+    trait_quantity = settings.TRAIT_QUANTITY
+    for t in traits:
+        category, created = Category.objects.get_or_create(name = t)
+        if created:
+            for i in range(trait_quantity):
+                trait = Trait.objects.create(category = category)
+    print ("*****Done*****")
 
 
                    

@@ -28,7 +28,7 @@
     </button>
     <div class="dropdown-content">
       {% for a in accounts %}
-      <a href="{% url 'nft_generator:account' account_id=a.account_id %}">{{a.name}}</a>
+      <a href="{% url 'nft_generator:account' id=a.id %}">{{a.name}}</a>
       {% endfor %}
     </div>
   </div>
@@ -38,8 +38,8 @@
         <i class="fa fa-caret-down"></i>
       </button>
       <div class="dropdown-content">
-        {% for p in tokens %}
-        <a href="{% url 'nft_generator:nft-generator' name=p.name %}">{{p.name}}</a>
+        {% for t in tokens %}
+        <a href="{% url 'nft_generator:nft-generator' id=t.id %}">{{t.name}}</a>
         {% endfor %}
       </div>
     </div>
@@ -49,8 +49,8 @@
       <i class="fa fa-caret-down"></i>
     </button>
     <div class="dropdown-content">
-      {% for p in tokens %}
-      <a href="{% url 'nft_generator:minting' name=p.name %}">{{p.name}}</a>
+      {% for t in tokens %}
+      <a href="{% url 'nft_generator:minting' id=t.id %}">{{t.name}}</a>
       {% endfor %}
     </div>
   </div>
@@ -60,8 +60,8 @@
     <i class="fa fa-caret-down"></i>
   </button>
   <div class="dropdown-content">
-    {% for p in tokens %}
-    <a href="{% url 'nft_generator:associate' name=p.name %}">{{p.name}}</a>
+    {% for t in tokens %}
+    <a href="{% url 'nft_generator:associate' id=t.id %}">{{t.name}}</a>
     {% endfor %}
   </div>
 </div>
@@ -72,8 +72,8 @@
     <i class="fa fa-caret-down"></i>
   </button>
   <div class="dropdown-content">
-    {% for p in tokens %}
-    <a href="{% url 'nft_generator:nfts' %}?token={{p.hedera_token_id}}">{{p.name}}</a>
+    {% for t in tokens %}
+    <a href="{% url 'nft_generator:nfts' %}?token_id={{t.id}}">{{t.name}}</a>
     {% endfor %}
   </div>
 </div>

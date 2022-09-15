@@ -3,7 +3,7 @@
  
 {% block content %}
  
-    <form id="transfer-form" method="POST" action="/transfer/{{nft.slug}}/">
+    <form id="transfer-form" method="POST" action="/transfer/{{nft.id}}/">
     {% csrf_token %}
         <div class="container">
             <h1>Let's transfer this NFT?</h1>
