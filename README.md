@@ -17,7 +17,7 @@ This is a [Dockerized](https://www.docker.com/) app that uses the following stac
 > Please use testnet credentials!
 * [Docker & Docker Compose](https://docs.docker.com/desktop/)
 * Some artwork would be great :)
-* 
+
 
 ***
 ***
@@ -39,10 +39,12 @@ git clone https://github.com/bobby-didcoding/hedera_nft_generator.git .
 ***
 
 ## Celery Logs
-Celery logs are kept away from GitHub. Therefore, we need to create the necessary directories.
+Celery logs are kept away from GitHub. Therefore, we need to create the necessary directories. We also need to create the mediafiles directory
 ```
+mkdir logs
 cd logs && echo This is our celery log > celery.log
 cd ..
+copy media mediafiles
 ```
 
 ***
@@ -51,10 +53,6 @@ cd ..
 ## Environment variable and secrets
 1. Create a .env file from .env.template
 ```
-#Unix and MacOS
-cp .env.template .env
-
-#windows
 copy .env.template .env
 ```
 
@@ -96,3 +94,5 @@ You should now be up and running!
 ***
 ***
 
+### Add artwork
+visit the trait table in the built-in admin page to add the names and artwork for your project.
