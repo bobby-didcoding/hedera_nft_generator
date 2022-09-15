@@ -24,48 +24,48 @@ This is a [Dockerized](https://www.docker.com/) app that uses the following stac
 
 ## Repository
 Clone or pull from the main branch before you begin coding. Download the zip file if you do not have a GitHub Account.
-    ```
-    #option 1 - SSH
-    git clone git@github.com:bobby-didcoding/hedera_nft_generator.git .
+```
+#option 1 - SSH
+git clone git@github.com:bobby-didcoding/hedera_nft_generator.git .
 
-    #option 2 - Github CLI
-    gh repo clone bobby-didcoding/hedera_nft_generator .
+#option 2 - Github CLI
+gh repo clone bobby-didcoding/hedera_nft_generator .
 
-    #option 3 - HTTPS
-    git clone https://github.com/bobby-didcoding/hedera_nft_generator.git .
-    ```
+#option 3 - HTTPS
+git clone https://github.com/bobby-didcoding/hedera_nft_generator.git .
+```
 
 ***
 ***
 
 ## Celery Logs
 Celery logs are kept away from GitHub. Therefore, we need to create the necessary directories.
-    ```
-    cd logs && echo This is our celery log > celery.log
-    cd ..
-    ```
+```
+cd logs && echo This is our celery log > celery.log
+cd ..
+```
 
 ***
 ***
 
 ## Environment variable and secrets
 1. Create a .env file from .env.template
-    ```
-    #Unix and MacOS
-    cp .env.template .env
+```
+#Unix and MacOS
+cp .env.template .env
 
-    #windows
-    copy .env.template .env
-    ```
+#windows
+copy .env.template .env
+```
 
 2. Update your new .env file with OPERATOR_ID (Public key), OPERATOR_KEY (Secret key), TRAITS (The trait categories i.e. hair or eyes) and TRAIT_QUANTITY (How many images options do you need for each trait?)
-    ```
-    export OPERATOR_ID=***User your credentials***
-    export OPERATOR_KEY=***User your credentials***
-    ##name of each trait category separated with a space
-    export TRAITS=Base Body Pants
-    export TRAIT_QUANTITY=10
-    ```
+```
+export OPERATOR_ID=***User your credentials***
+export OPERATOR_KEY=***User your credentials***
+##name of each trait category separated with a space
+export TRAITS=Base Body Pants
+export TRAIT_QUANTITY=10
+```
 
 ***
 ***
