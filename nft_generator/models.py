@@ -51,7 +51,7 @@ class Trait(TimeStampedModel,models.Model):
     image = models.ImageField(default='blank.png', upload_to='traits')
 
     def __str__(self):
-        return f'{self.name}'
+        return f'{self.category.name} - {self.name}'
 
 
 
@@ -118,8 +118,8 @@ class NoneFungibleToken(TimeStampedModel,models.Model):
     Stores a single nft entry, related to :model:`nft_generator.Token` and
     :model:`nft_generator.Account`.
     """
-    account = models.ForeignKey(Account, on_delete=models.SET_NULL, null=True)
-    token = models.ForeignKey(Token, on_delete=models.SET_NULL, null=True)
+    account = models.ForeignKey(Account, on_delete=models.SET_NULL, null=True, blank=True)
+    token = models.ForeignKey(Token, on_delete=models.SET_NULL, null=True, blank=True)
     name = models.CharField(max_length=100, null=True, blank=True)
     image = models.ImageField(default='blank.png', upload_to='nfts')
     traits = models.ManyToManyField(Trait, blank=True)

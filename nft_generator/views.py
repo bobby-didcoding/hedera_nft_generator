@@ -12,7 +12,7 @@ from apis.hedera.utils import AccountManager
 # App imports
 # --------------------------------------------------------------
 from .models import NoneFungibleToken, Token, Account
-from .tasks import create_nft, mint_nft, associate_account, transfer_nft
+from .tasks import create_nft, mint_nft, associate_account, transfer_nft, create_ipfs_cid,create_new_from_traits
 from .forms import NFTForm, TokenForm, MintingForm,AssociateForm, TransferForm
 from .decorators import redirect_if_no_token
 
@@ -360,3 +360,20 @@ class AccountView(generic.ListView):
         object.save()
         context["object"] = object
         return context 
+
+
+def send_to_ipfs(request, id):
+    """
+    view to handel admin NFT creation
+    """
+    create_ipfs_cid(id)
+
+    return redirect(request.GET.get("url"))
+
+def create_from_traits(request, id):
+    """
+    view to handel admin NFT creation from trait list
+    """
+    create_new_from_traits(id)
+
+    return redirect(request.GET.get("url"))

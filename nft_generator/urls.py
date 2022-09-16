@@ -23,5 +23,7 @@ urlpatterns = [
     path('transfer/<str:id>/', views.TransferView.as_view(), name="transfer"),
     path('accounts/', views.AccountsView.as_view(), name="accounts"),
     path('account/<str:id>/', views.AccountView.as_view(), name="account"),
+    path('send-to-ipfs/<str:id>/', views.send_to_ipfs, name="send-to-ipfs"),
+    path('create-from-traits/<str:id>/', views.create_from_traits, name="create_from_traits"),
     ]
  

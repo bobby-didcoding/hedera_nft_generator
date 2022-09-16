@@ -115,6 +115,113 @@ def create_nft(self, quantity, token_id):
     return('Done')
 
 
+@shared_task(bind=True)
+def create_new_from_traits(self, nft_id):
+    '''
+    This allows us to create NFT artwork locally from the admin page
+    This also calls the IPFS api in apis/ipfs/utils
+    '''
+    new_nft = NoneFungibleToken.objects.get(id=nft_id)
+    
+    blank_image = Image.open(f'{settings.MEDIA_ROOT}/blank.png').convert('RGBA')
+    for trait in new_nft.traits.all():
+        img = Image.open(trait.image.path).convert('RGBA')
+        blank_image.paste(img, (0, 0), img)
+
+    #Resize image to OpenSea market recommended size - "Resample Nearest" to retain resolution
+    resized_img = blank_image.resize((1500, 1500), resample=Image.NEAREST)
+    image_io = BytesIO()
+
+    token_name = new_nft.token.name
+
+    resized_img.save(image_io, "PNG")
+    name = f'{token_name}_{new_nft.id}'
+    file_name = f'{name}.png'
+    image = File(image_io, name=file_name)
+
+    new_nft.image = image
+    new_nft.save()
+
+    #Send new image to IFPS and 
+    ipfs_image_uri = add_to_ipfs(new_nft.image.path, new_nft.get_image_name)
+    new_nft.ipfs_image_uri = ipfs_image_uri
+    new_nft.save()
+    prop_list = [{"trait_type":t.category.name.lower(),"value": t.name} for t in new_nft.traits.all()]
+
+    meta = {
+        "name":new_nft.name,
+        "creator":new_nft.get_creator,
+        "description":new_nft.get_description,
+        "type":"image/png",
+        "format":"none",
+        "properties": prop_list,
+        "image":new_nft.ipfs_image_uri.split('?')[0].replace('https://ipfs.io/ipfs/', 'ipfs://')
+    }
+
+    blank_filename = f'media/blank.json'
+    new_filename = f'{new_nft.name}.json'
+
+    with open(blank_filename, 'w') as f:
+        json.dump(meta ,f, indent=4, sort_keys=True, default=str)
+
+    with open(blank_filename, "r") as f:
+        new_nft.file.save(new_filename, f)
+
+    new_nft.save()
+
+    #Send new json to IFPS and 
+    ipfs_file_uri = add_to_ipfs(new_nft.file.path, new_nft.get_file_name)
+    new_nft.ipfs_file_uri = ipfs_file_uri
+    new_nft.save()
+
+    print('NFT created')
+    return('Done')
+
+
+@shared_task(bind=True)
+def create_ipfs_cid(self, nft_id):
+    '''
+    This allows us to create NFT artwork from the admin page
+    '''
+
+    new_nft = NoneFungibleToken.objects.get(id=nft_id)
+
+    #Send new image to IFPS and 
+    ipfs_image_uri = add_to_ipfs(new_nft.image.path, new_nft.get_image_name)
+    new_nft.ipfs_image_uri = ipfs_image_uri
+    new_nft.save()
+    prop_list = [{"trait_type":t.category.name.lower(),"value": t.name} for t in new_nft.traits.all()]
+
+    meta = {
+        "name":new_nft.name,
+        "creator":new_nft.get_creator,
+        "description":new_nft.get_description,
+        "type":"image/png",
+        "format":"none",
+        "properties": prop_list,
+        "image":new_nft.ipfs_image_uri.split('?')[0].replace('https://ipfs.io/ipfs/', 'ipfs://')
+    }
+
+    blank_filename = f'media/blank.json'
+    new_filename = f'{new_nft.name}.json'
+
+    with open(blank_filename, 'w') as f:
+        json.dump(meta ,f, indent=4, sort_keys=True, default=str)
+
+    with open(blank_filename, "r") as f:
+        new_nft.file.save(new_filename, f)
+
+    new_nft.save()
+
+    #Send new json to IFPS and 
+    ipfs_file_uri = add_to_ipfs(new_nft.file.path, new_nft.get_file_name)
+    new_nft.ipfs_file_uri = ipfs_file_uri
+    new_nft.save()
+
+    print('NFT created')
+    return('Done')
+
+
 
 @shared_task(bind=True)
 def create_token(self, token):

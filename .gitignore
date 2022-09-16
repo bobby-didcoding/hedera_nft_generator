@@ -1,6 +1,6 @@
-mediafiles/
+
 staticfiles/
-logs/celery.log
+
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
@@ -9,7 +9,7 @@ __pycache__/
 
 # C extensions
 *.so
-/app/logs/celery.log
+
 # Distribution / packaging
 .Python
 build/
@@ -58,7 +58,7 @@ cover/
 # Translations
 *.mo
 *.pot
-*.log
+
 
 # Django stuff:
 # *.log

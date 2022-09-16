@@ -38,18 +38,6 @@ git clone https://github.com/bobby-didcoding/hedera_nft_generator.git .
 ***
 ***
 
-## Celery Logs
-Celery logs are kept away from GitHub. Therefore, we need to create the necessary directories. We also need to create the mediafiles directory
-```
-mkdir logs
-cd logs && echo This is our celery log > celery.log
-cd ..
-copy media mediafiles
-```
-
-***
-***
-
 ## Environment variable and secrets
 1. Create a .env file from .env.template
 ```
