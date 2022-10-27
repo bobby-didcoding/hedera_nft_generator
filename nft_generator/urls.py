@@ -14,6 +14,7 @@ app_name = "nft_generator"
 urlpatterns = [
     path('', views.HomeView.as_view(), name="home"),
     path('nft-generator/<str:id>/', views.NFTGeneratorView.as_view(), name="nft-generator"),
+    path('nft-from-artwork-generator/<str:id>/', views.NFTFromArtworkGeneratorView.as_view(), name="nft-from-artwork-generator"),
     path('nfts/', views.NFTSView.as_view(), name="nfts"),
     path('nft/<str:id>/', views.NFTView.as_view(), name='nft'),
     path('token/', views.TokenView.as_view(), name="token"),

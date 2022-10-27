@@ -12,7 +12,7 @@ from apis.hedera.utils import AccountManager
 # App imports
 # --------------------------------------------------------------
 from .models import NoneFungibleToken, Token, Account
-from .tasks import create_nft, mint_nft, associate_account, transfer_nft, create_ipfs_cid,create_new_from_traits
+from .tasks import create_nft, mint_nft, associate_account, transfer_nft, create_ipfs_cid,create_new_from_traits,create_nft_from_artwork
 from .forms import NFTForm, TokenForm, MintingForm,AssociateForm, TransferForm
 from .decorators import redirect_if_no_token
 
@@ -56,6 +56,41 @@ class NFTGeneratorView(generic.FormView):
             messages.success(self.request, f"You have generated {quantity} piece(s) of NFT artwork. You now need to mint them.")
             create_nft.delay(quantity, token.id)
 
+        return super().form_valid(form)
+
+    @method_decorator(redirect_if_no_token)
+    def dispatch(self, *args, **kwargs):
+        return super().dispatch(*args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["token"] = Token.objects.get(id = self.kwargs['id'])
+        return context
+
+   
+class NFTFromArtworkGeneratorView(generic.FormView):
+    """
+    FormView to create NFT from pre made artwork.
+
+    An instance of :form:`NFTForm`.
+
+    **Template:**
+
+    :template:`nft_generator/nft_from_artwork_generator.html`
+    """
+    form_class = NFTForm
+    template_name = "nft_generator/nft_from_artwork_generator.html"
+    success_url = '/nfts'
+    
+    def form_valid(self, form):
+        quantity = form.cleaned_data.get('quantity')
+        
+        token = Token.objects.get(id =self.kwargs['id'])
+        if quantity > token.get_remaining_supply:
+            messages.error(self.request, f"You have {token.get_remaining_supply} remaining supply")
+        else:
+            create_nft_from_artwork.delay(token.id)
+            messages.success(self.request, f"Your artwork is ready. You now need to mint them.")
         return super().form_valid(form)
 
     @method_decorator(redirect_if_no_token)
@@ -375,5 +410,14 @@ def create_from_traits(request, id):
     view to handel admin NFT creation from trait list
     """
     create_new_from_traits(id)
+
+    return redirect(request.GET.get("url"))
+
+
+def create_from_own_artwork(request, id):
+    """
+    view to handel admin NFT creation from trait list
+    """
+    create_from_own_artwork(id)
 
     return redirect(request.GET.get("url"))

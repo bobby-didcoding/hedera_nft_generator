@@ -42,6 +42,7 @@
                 <tr>
                     <td><a role="button" class="btn btn-success" href="{% url 'nft_generator:nfts' %}?token_id={{object.id}}" >View NFTs</a></td>
                     <td><a role="button" class="btn btn-success" href="{% url 'nft_generator:nft-generator' id=object.id %}" >Generate NFT</a></td>
+                    <td><a role="button" class="btn btn-success" href="{% url 'nft_generator:nft-from-artwork-generator' id=object.id %}" >Generate NFT (from artwork)</a></td>
                     <td><a role="button" class="btn btn-success" href="{% url 'nft_generator:minting' id=object.id %}" >Mint NFT</a></td>
                     <td><a role="button" class="btn btn-success" href="{% url 'nft_generator:associate' id=object.id %}" >Associate</a></td>
                 </tr>

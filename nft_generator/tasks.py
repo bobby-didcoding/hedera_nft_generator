@@ -6,6 +6,7 @@ from random import randint
 import json
 import time
 import random
+import os
 
 # --------------------------------------------------------------
 # Django imports
@@ -13,6 +14,7 @@ import random
 from django.conf import settings
 from django.core.files.uploadedfile import File
 from django.db.models import Max
+from django.templatetags.static import static
 
 # --------------------------------------------------------------
 # App imports
@@ -113,6 +115,74 @@ def create_nft(self, quantity, token_id):
 
         print('NFT created')
     return('Done')
+
+
+@shared_task(bind=True)
+def create_nft_from_artwork(self, token_id):
+    '''
+    This allows us to create NFT from bespoke artwork
+    This also calls the IPFS api in apis/ipfs/utils
+    '''
+
+    token = Token.objects.get(id = token_id)
+    directory = os.fsencode(f'{settings.STATIC_ROOT}/artwork')
+    
+    for nft in os.listdir(directory):
+        filename = os.fsdecode(nft)
+        if filename.endswith(".jpg") or filename.endswith(".png"): 
+            time.sleep(2)
+
+            new_nft = NoneFungibleToken.objects.create(token=token)
+            token_name = new_nft.token.name
+            name = f'{token_name}_{new_nft.id}'
+            new_nft.name = name
+            new_nft.save()
+            with open(f'{settings.STATIC_ROOT}/artwork/{filename}', 'rb') as f:
+                data = File(f)
+                new_nft.image.save(filename, data, True)
+
+            #Send new image to IFPS and 
+            ipfs_image_uri = add_to_ipfs(new_nft.image.path, new_nft.get_image_name)
+            new_nft.ipfs_image_uri = ipfs_image_uri
+            new_nft.save()
+            prop_list = []
+
+            meta = {
+                "name":new_nft.name,
+                "creator":new_nft.get_creator,
+                "description":new_nft.get_description,
+                "type":"image/png",
+                "format":"none",
+                "properties": prop_list,
+                "image":new_nft.ipfs_image_uri.split('?')[0].replace('https://ipfs.io/ipfs/', 'ipfs://')
+            }
+
+            blank_filename = f'media/blank.json'
+            new_filename = f'{new_nft.name}.json'
+
+            with open(blank_filename, 'w') as f:
+                json.dump(meta ,f, indent=4, sort_keys=True, default=str)
+
+            with open(blank_filename, "r") as f:
+                new_nft.file.save(new_filename, f)
+
+            new_nft.save()
+
+            #Send new json to IFPS and 
+            ipfs_file_uri = add_to_ipfs(new_nft.file.path, new_nft.get_file_name)
+            new_nft.ipfs_file_uri = ipfs_file_uri
+            new_nft.save()
+
+            print('NFT created')
+
+            continue
+        else:
+            continue
+
+
+
+    return('Done')
+
 
 
 @shared_task(bind=True)

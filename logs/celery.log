@@ -1,0 +1,174 @@
+[2022-10-27 10:20:34,424: INFO/MainProcess] Connected to redis://redis:6379//
+[2022-10-27 10:20:34,428: INFO/MainProcess] mingle: searching for neighbors
+[2022-10-27 10:20:35,435: INFO/MainProcess] mingle: all alone
+[2022-10-27 10:20:35,454: WARNING/MainProcess] /usr/local/lib/python3.10/site-packages/celery/fixups/django.py:203: UserWarning: Using settings.DEBUG leads to a memory
+            leak, never use this setting in production environments!
+  warnings.warn('''Using settings.DEBUG leads to a memory
+
+[2022-10-27 10:20:35,455: INFO/MainProcess] celery@cbc3f173502b ready.
+[2022-10-27 10:20:38,000: INFO/MainProcess] Events of group {task} enabled by remote.
+[2022-10-27 11:02:32,048: INFO/MainProcess] Task nft_generator.tasks.create_nft[e66728b6-12d2-440e-8388-a25c24a7a617] received
+[2022-10-27 11:02:34,533: WARNING/ForkPoolWorker-2] NFT created
+[2022-10-27 11:02:34,550: INFO/ForkPoolWorker-2] Task nft_generator.tasks.create_nft[e66728b6-12d2-440e-8388-a25c24a7a617] succeeded in 2.487956899999972s: 'Done'
+[2022-10-27 11:04:56,650: INFO/MainProcess] Connected to redis://redis:6379//
+[2022-10-27 11:04:56,655: INFO/MainProcess] mingle: searching for neighbors
+[2022-10-27 11:04:57,663: INFO/MainProcess] mingle: all alone
+[2022-10-27 11:04:57,675: WARNING/MainProcess] /usr/local/lib/python3.10/site-packages/celery/fixups/django.py:203: UserWarning: Using settings.DEBUG leads to a memory
+            leak, never use this setting in production environments!
+  warnings.warn('''Using settings.DEBUG leads to a memory
+
+[2022-10-27 11:04:57,676: INFO/MainProcess] celery@35eacbc1b341 ready.
+[2022-10-27 11:05:00,216: INFO/MainProcess] Events of group {task} enabled by remote.
+[2022-10-27 11:05:42,030: INFO/MainProcess] Task nft_generator.tasks.create_nft[8e4d7ac7-3e4d-490e-a816-a50dd06bbaff] received
+[2022-10-27 11:05:44,414: WARNING/ForkPoolWorker-2] NFT created
+[2022-10-27 11:05:44,417: INFO/ForkPoolWorker-2] Task nft_generator.tasks.create_nft[8e4d7ac7-3e4d-490e-a816-a50dd06bbaff] succeeded in 2.3790226999999504s: 'Done'
+[2022-10-27 11:09:06,640: INFO/MainProcess] Task nft_generator.tasks.create_nft_from_artwork[e673e6a3-1f8b-46b9-be33-68c2de832afe] received
+[2022-10-27 11:09:08,662: ERROR/ForkPoolWorker-2] Task nft_generator.tasks.create_nft_from_artwork[e673e6a3-1f8b-46b9-be33-68c2de832afe] raised unexpected: FileNotFoundError(2, 'No such file or directory')
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.10/site-packages/celery/app/trace.py", line 451, in trace_task
+    R = retval = fun(*args, **kwargs)
+  File "/usr/local/lib/python3.10/site-packages/celery/app/trace.py", line 734, in __protected_call__
+    return self.run(*args, **kwargs)
+  File "/code/nft_generator/tasks.py", line 137, in create_nft_from_artwork
+    image = Image.open(f'{directory}/{filename}')
+  File "/usr/local/lib/python3.10/site-packages/PIL/Image.py", line 3092, in open
+    fp = builtins.open(filename, "rb")
+FileNotFoundError: [Errno 2] No such file or directory: "b'/code/staticfiles/artwork'/mini_bobs_21.png"
+[2022-10-27 11:11:59,147: INFO/MainProcess] Connected to redis://redis:6379//
+[2022-10-27 11:11:59,155: INFO/MainProcess] mingle: searching for neighbors
+[2022-10-27 11:12:00,165: INFO/MainProcess] mingle: all alone
+[2022-10-27 11:12:00,183: WARNING/MainProcess] /usr/local/lib/python3.10/site-packages/celery/fixups/django.py:203: UserWarning: Using settings.DEBUG leads to a memory
+            leak, never use this setting in production environments!
+  warnings.warn('''Using settings.DEBUG leads to a memory
+
+[2022-10-27 11:12:00,184: INFO/MainProcess] celery@145fd57bc549 ready.
+[2022-10-27 11:12:02,003: INFO/MainProcess] Events of group {task} enabled by remote.
+[2022-10-27 11:16:07,837: INFO/MainProcess] Task nft_generator.tasks.create_nft_from_artwork[1ad61903-78de-4be8-afe5-e020e60d2f4f] received
+[2022-10-27 11:16:09,877: ERROR/ForkPoolWorker-2] Task nft_generator.tasks.create_nft_from_artwork[1ad61903-78de-4be8-afe5-e020e60d2f4f] raised unexpected: AttributeError('_committed')
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.10/site-packages/celery/app/trace.py", line 451, in trace_task
+    R = retval = fun(*args, **kwargs)
+  File "/usr/local/lib/python3.10/site-packages/celery/app/trace.py", line 734, in __protected_call__
+    return self.run(*args, **kwargs)
+  File "/code/nft_generator/tasks.py", line 144, in create_nft_from_artwork
+    new_nft.save()
+  File "/usr/local/lib/python3.10/site-packages/django_extensions/db/models.py", line 22, in save
+    super().save(**kwargs)
+  File "/usr/local/lib/python3.10/site-packages/django/db/models/base.py", line 743, in save
+    self.save_base(using=using, force_insert=force_insert,
+  File "/usr/local/lib/python3.10/site-packages/django/db/models/base.py", line 780, in save_base
+    updated = self._save_table(
+  File "/usr/local/lib/python3.10/site-packages/django/db/models/base.py", line 859, in _save_table
+    values = [(f, None, (getattr(self, f.attname) if raw else f.pre_save(self, False)))
+  File "/usr/local/lib/python3.10/site-packages/django/db/models/base.py", line 859, in <listcomp>
+    values = [(f, None, (getattr(self, f.attname) if raw else f.pre_save(self, False)))
+  File "/usr/local/lib/python3.10/site-packages/django/db/models/fields/files.py", line 300, in pre_save
+    if file and not file._committed:
+  File "/usr/local/lib/python3.10/site-packages/PIL/Image.py", line 517, in __getattr__
+    raise AttributeError(name)
+AttributeError: _committed
+[2022-10-27 11:20:30,011: INFO/MainProcess] Connected to redis://redis:6379//
+[2022-10-27 11:20:30,014: INFO/MainProcess] mingle: searching for neighbors
+[2022-10-27 11:20:31,021: INFO/MainProcess] mingle: all alone
+[2022-10-27 11:20:31,032: WARNING/MainProcess] /usr/local/lib/python3.10/site-packages/celery/fixups/django.py:203: UserWarning: Using settings.DEBUG leads to a memory
+            leak, never use this setting in production environments!
+  warnings.warn('''Using settings.DEBUG leads to a memory
+
+[2022-10-27 11:20:31,033: INFO/MainProcess] celery@5eefc8e42b5e ready.
+[2022-10-27 11:20:33,056: INFO/MainProcess] Events of group {task} enabled by remote.
+[2022-10-27 11:33:39,580: INFO/MainProcess] Task nft_generator.tasks.create_nft_from_artwork[3a7f62c9-9ae3-4ddc-aaa4-0b76e49788e2] received
+[2022-10-27 11:33:41,714: WARNING/ForkPoolWorker-2] NFT created
+[2022-10-27 11:33:43,795: WARNING/ForkPoolWorker-2] NFT created
+[2022-10-27 11:33:45,941: WARNING/ForkPoolWorker-2] NFT created
+[2022-10-27 11:33:45,946: INFO/ForkPoolWorker-2] Task nft_generator.tasks.create_nft_from_artwork[3a7f62c9-9ae3-4ddc-aaa4-0b76e49788e2] succeeded in 6.362167500000396s: 'Done'
+[2022-10-27 11:41:01,588: INFO/MainProcess] Connected to redis://redis:6379//
+[2022-10-27 11:41:01,593: INFO/MainProcess] mingle: searching for neighbors
+[2022-10-27 11:41:02,600: INFO/MainProcess] mingle: all alone
+[2022-10-27 11:41:02,612: WARNING/MainProcess] /usr/local/lib/python3.10/site-packages/celery/fixups/django.py:203: UserWarning: Using settings.DEBUG leads to a memory
+            leak, never use this setting in production environments!
+  warnings.warn('''Using settings.DEBUG leads to a memory
+
+[2022-10-27 11:41:02,613: INFO/MainProcess] celery@b427721e74fe ready.
+[2022-10-27 11:41:03,183: INFO/MainProcess] Events of group {task} enabled by remote.
+[2022-10-27 11:41:20,741: INFO/MainProcess] Task nft_generator.tasks.create_nft_from_artwork[8f144806-2343-402d-b04d-1eb55f855e36] received
+[2022-10-27 11:41:22,781: ERROR/ForkPoolWorker-2] Task nft_generator.tasks.create_nft_from_artwork[8f144806-2343-402d-b04d-1eb55f855e36] raised unexpected: SuspiciousFileOperation('The joined path (/code/staticfiles/artwork/mini_bobs_21.png) is located outside of the base path component (/code/mediafiles)')
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.10/site-packages/celery/app/trace.py", line 451, in trace_task
+    R = retval = fun(*args, **kwargs)
+  File "/usr/local/lib/python3.10/site-packages/celery/app/trace.py", line 734, in __protected_call__
+    return self.run(*args, **kwargs)
+  File "/code/nft_generator/tasks.py", line 147, in create_nft_from_artwork
+    ipfs_image_uri = add_to_ipfs(new_nft.image.path, new_nft.get_image_name)
+  File "/usr/local/lib/python3.10/site-packages/django/db/models/fields/files.py", line 59, in path
+    return self.storage.path(self.name)
+  File "/usr/local/lib/python3.10/site-packages/django/core/files/storage.py", line 333, in path
+    return safe_join(self.location, name)
+  File "/usr/local/lib/python3.10/site-packages/django/utils/_os.py", line 29, in safe_join
+    raise SuspiciousFileOperation(
+django.core.exceptions.SuspiciousFileOperation: The joined path (/code/staticfiles/artwork/mini_bobs_21.png) is located outside of the base path component (/code/mediafiles)
+[2022-10-27 11:44:28,802: INFO/MainProcess] Connected to redis://redis:6379//
+[2022-10-27 11:44:28,806: INFO/MainProcess] mingle: searching for neighbors
+[2022-10-27 11:44:29,814: INFO/MainProcess] mingle: all alone
+[2022-10-27 11:44:29,824: WARNING/MainProcess] /usr/local/lib/python3.10/site-packages/celery/fixups/django.py:203: UserWarning: Using settings.DEBUG leads to a memory
+            leak, never use this setting in production environments!
+  warnings.warn('''Using settings.DEBUG leads to a memory
+
+[2022-10-27 11:44:29,825: INFO/MainProcess] celery@b646f5968cf0 ready.
+[2022-10-27 11:44:32,319: INFO/MainProcess] Events of group {task} enabled by remote.
+[2022-10-27 11:47:04,857: INFO/MainProcess] Task nft_generator.tasks.create_nft_from_artwork[4f23cd7e-1532-4083-b665-b27fe4ba4751] received
+[2022-10-27 11:47:06,904: ERROR/ForkPoolWorker-2] Task nft_generator.tasks.create_nft_from_artwork[4f23cd7e-1532-4083-b665-b27fe4ba4751] raised unexpected: ValueError("The 'image' attribute has no file associated with it.")
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.10/site-packages/celery/app/trace.py", line 451, in trace_task
+    R = retval = fun(*args, **kwargs)
+  File "/usr/local/lib/python3.10/site-packages/celery/app/trace.py", line 734, in __protected_call__
+    return self.run(*args, **kwargs)
+  File "/code/nft_generator/tasks.py", line 147, in create_nft_from_artwork
+    ipfs_image_uri = add_to_ipfs(new_nft.image.path, new_nft.get_image_name)
+  File "/usr/local/lib/python3.10/site-packages/django/db/models/fields/files.py", line 58, in path
+    self._require_file()
+  File "/usr/local/lib/python3.10/site-packages/django/db/models/fields/files.py", line 40, in _require_file
+    raise ValueError("The '%s' attribute has no file associated with it." % self.field.name)
+ValueError: The 'image' attribute has no file associated with it.
+[2022-10-27 11:49:48,625: INFO/MainProcess] Connected to redis://redis:6379//
+[2022-10-27 11:49:48,629: INFO/MainProcess] mingle: searching for neighbors
+[2022-10-27 11:49:49,640: INFO/MainProcess] mingle: all alone
+[2022-10-27 11:49:49,651: WARNING/MainProcess] /usr/local/lib/python3.10/site-packages/celery/fixups/django.py:203: UserWarning: Using settings.DEBUG leads to a memory
+            leak, never use this setting in production environments!
+  warnings.warn('''Using settings.DEBUG leads to a memory
+
+[2022-10-27 11:49:49,652: INFO/MainProcess] celery@a1baa902b3d6 ready.
+[2022-10-27 11:49:52,269: INFO/MainProcess] Events of group {task} enabled by remote.
+[2022-10-27 11:56:40,312: INFO/MainProcess] Task nft_generator.tasks.create_nft_from_artwork[7571851f-123c-4c38-b3a7-11e3fa97806f] received
+[2022-10-27 11:56:42,347: ERROR/ForkPoolWorker-2] Task nft_generator.tasks.create_nft_from_artwork[7571851f-123c-4c38-b3a7-11e3fa97806f] raised unexpected: FileNotFoundError(2, 'No such file or directory')
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.10/site-packages/celery/app/trace.py", line 451, in trace_task
+    R = retval = fun(*args, **kwargs)
+  File "/usr/local/lib/python3.10/site-packages/celery/app/trace.py", line 734, in __protected_call__
+    return self.run(*args, **kwargs)
+  File "/code/nft_generator/tasks.py", line 140, in create_nft_from_artwork
+    with open('path_to_file', 'rb') as f:
+FileNotFoundError: [Errno 2] No such file or directory: 'path_to_file'
+[2022-10-27 11:57:35,996: INFO/MainProcess] Task nft_generator.tasks.create_nft_from_artwork[ad501385-c93b-4e73-ae3d-497ba6f0f114] received
+[2022-10-27 11:57:38,020: ERROR/ForkPoolWorker-2] Task nft_generator.tasks.create_nft_from_artwork[ad501385-c93b-4e73-ae3d-497ba6f0f114] raised unexpected: FileNotFoundError(2, 'No such file or directory')
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.10/site-packages/celery/app/trace.py", line 451, in trace_task
+    R = retval = fun(*args, **kwargs)
+  File "/usr/local/lib/python3.10/site-packages/celery/app/trace.py", line 734, in __protected_call__
+    return self.run(*args, **kwargs)
+  File "/code/nft_generator/tasks.py", line 140, in create_nft_from_artwork
+    with open('path_to_file', 'rb') as f:
+FileNotFoundError: [Errno 2] No such file or directory: 'path_to_file'
+[2022-10-27 11:59:04,276: INFO/MainProcess] Connected to redis://redis:6379//
+[2022-10-27 11:59:04,279: INFO/MainProcess] mingle: searching for neighbors
+[2022-10-27 11:59:05,292: INFO/MainProcess] mingle: all alone
+[2022-10-27 11:59:05,303: WARNING/MainProcess] /usr/local/lib/python3.10/site-packages/celery/fixups/django.py:203: UserWarning: Using settings.DEBUG leads to a memory
+            leak, never use this setting in production environments!
+  warnings.warn('''Using settings.DEBUG leads to a memory
+
+[2022-10-27 11:59:05,304: INFO/MainProcess] celery@9319243a3baf ready.
+[2022-10-27 11:59:07,721: INFO/MainProcess] Events of group {task} enabled by remote.
+[2022-10-27 12:11:37,665: INFO/MainProcess] Task nft_generator.tasks.create_nft_from_artwork[572e4962-da18-49b3-b84a-032b737eb34c] received
+[2022-10-27 12:11:39,799: WARNING/ForkPoolWorker-2] NFT created
+[2022-10-27 12:11:41,945: WARNING/ForkPoolWorker-2] NFT created
+[2022-10-27 12:11:44,036: WARNING/ForkPoolWorker-2] NFT created
+[2022-10-27 12:11:44,058: INFO/ForkPoolWorker-2] Task nft_generator.tasks.create_nft_from_artwork[572e4962-da18-49b3-b84a-032b737eb34c] succeeded in 6.389486500000203s: 'Done'

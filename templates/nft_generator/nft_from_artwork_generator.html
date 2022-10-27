@@ -1,0 +1,25 @@
+
+{% extends 'nft_generator/base.html' %}
+ 
+{% block content %}
+ 
+    <form id="nft-form" method="POST" action="/nft-from-artwork-generator/{{token.id}}/">
+    {% csrf_token %}
+        <div class="container">
+            <h1>Generate NFT's from your art</h1>
+
+            <hr>
+
+            <p hidden>
+                <label for="id_quantity">Quantity:</label>
+                <input type="number" name="quantity" placeholder="*Quantity.." class="form-control" required="" id="id_quantity" value=1>
+              </p>
+
+ 
+            <hr>
+            <button type="submit" class="register btn">Generate</button>
+        </div>
+    </form>
+ 
+{% endblock %}
+ 
